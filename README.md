@@ -1,21 +1,18 @@
 # Americor's PHP Developer Test Assignment
 
-## Overview
+This test assignment is designed to evaluate candidates' coding and problem-solving skills.
 
-This test assignment is designed to evaluate candidates' coding and problem-solving skills. The task involves working with a project codebase that is constantly growing in complexity due to an increasing number of "event types" and "objects". It can potentially have more than 150 event types, growing by about 2 each month, and more than 30 objects.
+### Task
 
-## Task Details
+As a candidate for a PHP developer position, your task is a code refactoring operation for an existing codebase of a growing project. The project involves a multitude of 'event types' and 'objects' which present a growing complexity - a key challenge to tackle.
+Specifically, your task is to streamline this codebase in a way that optimizes performance, and at the same time keeps the maintainability of the codebase intact.
+Continue on this task keeping in mind the potential scaling of the project, considering the event types could grow beyond 150 with an average addition of 2 every month, and the objects could exceed a count of 30.
 
-### Code Refactoring Task
+Specific areas to refactor:
+- **History Feed Output:** Pay special attention to refactoring the code area dealing with the output of the history feed.
+- **Export Functionalities:** The efficiency and performance of the data exporting functions should also be a primary focus during the refactoring process.
 
-1. **Repository Management**: Import the provided code into your git repository. Please ensure not to fork the original code.
-2. **Refactoring Process**:
-   - Create a new branch in your repository specifically for the task.
-   - Focus on refactoring the history feed output and the data export functionality.
-3. **Pull Request**:
-   - Once refactoring is complete, initiate a pull request from your refactoring branch to the master branch of your repository.
-   - In the pull request, detail the changes made and explain the reasoning behind each change.
-4. **Submission**: Submit the link to your pull request for our review.
+The task does not require the code to be fully functional. Instead, our primary interest is in understanding your approach and strategy for addressing such a challenge, as well as the concepts and methodologies you employ to tackle them.
 
 ### Evaluation Criteria
 
@@ -29,6 +26,17 @@ When reviewing your solution, we will focus on the following aspects:
 - **Maintenance & Development**: How your approach facilitates future maintenance and development of the project.
 - **Large Data Set Export**: Your solution for efficiently handling and exporting large data sets.
 
-## Conclusion
+### Code Refactoring Process
 
-This test assignment is an opportunity to showcase your technical skills and problem-solving abilities. We look forward to seeing your solutions. Good luck!
+1. **Repository Management**: Import the provided code into your git repository. Please ensure not to fork the original code.
+2. **Refactoring Process**:
+   - Create a new branch in your repository specifically for the task.
+   - Focus on refactoring the history feed output and the data export functionality.
+3. **Pull Request**:
+   - Once refactoring is complete, initiate a pull request from your refactoring branch to the master branch of your repository.
+   - In the pull request, detail the changes made and explain the reasoning behind each change.
+4. **Submission**: Submit the link to your pull request for our review.
+
+### Conclusion
+
+This test assignment is an opportunity to demonstrate your technical skills and problem-solving abilities. We look forward to reviewing your solutions. Good luck!
