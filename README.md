@@ -37,6 +37,28 @@ When reviewing your solution, we will focus on the following aspects:
    - In the pull request, detail the changes made and explain the reasoning behind each change.
 4. **Submission**: Submit the link to your pull request for our review.
 
+### How to run the project
+
+The project is built using the Yii 2 framework. To run the project, follow the steps below:
+1. Clone the repository to your local machine.
+2. Run docker-compose to start the project:
+   ```bash
+   docker-compose up --build -d
+   ```
+3. Connect to the PHP container:
+   ```bash
+   docker exec -it americor-app bash
+   ```
+4. Install the project dependencies:
+   ```bash
+    composer install
+    ```
+5. Run the migrations to create the database tables:
+   ```bash
+   php yii migrate
+   ```
+6. Access the project in your browser at `http://localhost:8000`.
+
 ### Conclusion
 
 This test assignment is an opportunity to demonstrate your technical skills and problem-solving abilities. We look forward to reviewing your solutions. Good luck!
