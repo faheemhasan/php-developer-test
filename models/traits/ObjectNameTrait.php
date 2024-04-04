@@ -2,24 +2,11 @@
 
 namespace app\models\traits;
 
-use app\models\Call;
-use app\models\Customer;
-use app\models\Fax;
-use app\models\Sms;
-use app\models\Task;
-use app\models\User;
+use Yii;
+use app\models\mapping\ObjectMap;
 
 trait ObjectNameTrait
 {
-    public static $classes = [
-        Customer::class,
-        Sms::class,
-        Task::class,
-        Call::class,
-        Fax::class,
-        User::class,
-    ];
-
     /**
      * @param $name
      * @param bool $throwException
@@ -28,13 +15,20 @@ trait ObjectNameTrait
     public function getRelation($name, $throwException = true)
     {
         $getter = 'get' . $name;
-        $class = self::getClassNameByRelation($name);
+        if (method_exists($this, $getter)) {
+            return parent::getRelation($name, $throwException);
+        }
 
-        if (!method_exists($this, $getter) && $class) {
+        $class = self::getClassNameByRelation($name);
+        if ($class !== null) {
             return $this->hasOne($class, ['id' => 'object_id']);
         }
 
-        return parent::getRelation($name, $throwException);
+        if ($throwException) {
+            throw new \yii\base\InvalidCallException("Relation $name does not exist.");
+        }
+
+        return null;
     }
 
     /**
@@ -51,16 +45,25 @@ trait ObjectNameTrait
     }
 
     /**
-     * @param $relation
-     * @return string|null
+     * Dynamically resolves the model class name for a given relation.
+     * 
+     * @param string $relation The relation name.
+     * @return string|null The fully qualified model class name or null if not found.
      */
-    public static function getClassNameByRelation($relation)
+    protected static function getClassNameByRelation($relation)
     {
-        foreach (self::$classes as $class) {
-            if (self::getObjectByTableClassName($class) == $relation) {
-                return $class;
-            }
+        $cacheKey = "relation_class_{$relation}";
+
+        $cached = Yii::$app->cache->get($cacheKey);
+        if ($cached !== false) {
+            return $cached;
         }
-        return null;
+    
+        $objectMap = ObjectMap::findOne(['object_type' => $relation]);
+        $className = $objectMap ? $objectMap->model_class : null;
+        
+        Yii::$app->cache->set($cacheKey, $className, 3600); // Example: 1-hour duration
+        return $className;
     }
+    
 }

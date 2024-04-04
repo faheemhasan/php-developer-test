@@ -1,0 +1,11 @@
+INSERT INTO event_type (event, text) VALUES ('created_task', 'Task created');
+INSERT INTO event_type (event, text) VALUES ('updated_task', 'Task updated');
+INSERT INTO event_type (event, text) VALUES ('completed_task', 'Task completed');
+INSERT INTO event_type (event, text) VALUES ('incoming_sms', 'Incoming Message');
+INSERT INTO event_type (event, text) VALUES ('outgoing_sms', 'Outgoing Message');
+INSERT INTO event_type (event, text) VALUES ('incoming_call', 'Incoming Call');
+INSERT INTO event_type (event, text) VALUES ('outgoing_call', 'Outgoing Call');
+INSERT INTO event_type (event, text) VALUES ('missed_call', 'Missed Call');
+INSERT INTO event_type (event, text) VALUES ('outgoing_fax', 'Outgoing Fax');
+INSERT INTO event_type (event, text) VALUES ('customer_change_type', 'Type changed');
+INSERT INTO event_type (event, text) VALUES ('customer_change_quality', 'Property changed');

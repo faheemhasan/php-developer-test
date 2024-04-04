@@ -6,6 +6,7 @@ use app\models\traits\ObjectNameTrait;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use app\models\mapping\EventType;
 
 /**
  * This is the model class for table "{{%history}}".
@@ -25,30 +26,11 @@ use yii\db\ActiveRecord;
  * @property Customer $customer
  * @property User $user
  *
- * @property Task $task
- * @property Sms $sms
- * @property Call $call
  */
 class History extends ActiveRecord
 {
     use ObjectNameTrait;
-
-    const EVENT_CREATED_TASK = 'created_task';
-    const EVENT_UPDATED_TASK = 'updated_task';
-    const EVENT_COMPLETED_TASK = 'completed_task';
-
-    const EVENT_INCOMING_SMS = 'incoming_sms';
-    const EVENT_OUTGOING_SMS = 'outgoing_sms';
-
-    const EVENT_INCOMING_CALL = 'incoming_call';
-    const EVENT_OUTGOING_CALL = 'outgoing_call';
-
-    const EVENT_INCOMING_FAX = 'incoming_fax';
-    const EVENT_OUTGOING_FAX = 'outgoing_fax';
-
-    const EVENT_CUSTOMER_CHANGE_TYPE = 'customer_change_type';
-    const EVENT_CUSTOMER_CHANGE_QUALITY = 'customer_change_quality';
-
+    
     /**
      * @inheritdoc
      */
@@ -108,46 +90,29 @@ class History extends ActiveRecord
     }
 
     /**
-     * @return array
+     * @return mixed|string
      */
-    public static function getEventTexts()
+    public function getEventText()
     {
-        return [
-            self::EVENT_CREATED_TASK => Yii::t('app', 'Task created'),
-            self::EVENT_UPDATED_TASK => Yii::t('app', 'Task updated'),
-            self::EVENT_COMPLETED_TASK => Yii::t('app', 'Task completed'),
+        $cacheKey = "event_text_{$this->event}";
 
-            self::EVENT_INCOMING_SMS => Yii::t('app', 'Incoming message'),
-            self::EVENT_OUTGOING_SMS => Yii::t('app', 'Outgoing message'),
+        // Attempt to retrieve the event text from cache
+        $text = Yii::$app->cache->get($cacheKey);
 
-            self::EVENT_CUSTOMER_CHANGE_TYPE => Yii::t('app', 'Type changed'),
-            self::EVENT_CUSTOMER_CHANGE_QUALITY => Yii::t('app', 'Property changed'),
-
-            self::EVENT_OUTGOING_CALL => Yii::t('app', 'Outgoing call'),
-            self::EVENT_INCOMING_CALL => Yii::t('app', 'Incoming call'),
-
-            self::EVENT_INCOMING_FAX => Yii::t('app', 'Incoming fax'),
-            self::EVENT_OUTGOING_FAX => Yii::t('app', 'Outgoing fax'),
-        ];
-    }
-
-    /**
-     * @param $event
-     * @return mixed
-     */
-    public static function getEventTextByEvent($event)
-    {
-        return static::getEventTexts()[$event] ?? $event;
+        if ($text === false) {
+            $eventType = EventType::find()->where(['event' => $this->event])->one();
+            $text = $eventType ? $eventType->text : "Unknown event";
+            Yii::$app->cache->set($cacheKey, $text, 3600); // Adjust caching time as needed
+        }
+        return $text;
     }
 
     /**
      * @return mixed|string
      */
-    public function getEventText()
-    {
-        return static::getEventTextByEvent($this->event);
+    public function getEventMessage(){
+        return '';
     }
-
 
     /**
      * @param $attribute

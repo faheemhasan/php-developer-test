@@ -48,6 +48,7 @@ ini_set('memory_limit', '2048M');
             'label' => Yii::t('app', 'Message'),
             'value' => function (History $model) {
                 return strip_tags(HistoryListHelper::getBodyByModel($model));
+                //return strip_tags($model->getEventMessage());
             }
         ]
     ],

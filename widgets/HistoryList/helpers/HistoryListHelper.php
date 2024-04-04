@@ -8,30 +8,47 @@ use app\models\History;
 
 class HistoryListHelper
 {
+
+    const EVENT_CREATED_TASK = 'created_task';
+    const EVENT_UPDATED_TASK = 'updated_task';
+    const EVENT_COMPLETED_TASK = 'completed_task';
+
+    const EVENT_INCOMING_SMS = 'incoming_sms';
+    const EVENT_OUTGOING_SMS = 'outgoing_sms';
+
+    const EVENT_INCOMING_CALL = 'incoming_call';
+    const EVENT_OUTGOING_CALL = 'outgoing_call';
+
+    const EVENT_INCOMING_FAX = 'incoming_fax';
+    const EVENT_OUTGOING_FAX = 'outgoing_fax';
+
+    const EVENT_CUSTOMER_CHANGE_TYPE = 'customer_change_type';
+    const EVENT_CUSTOMER_CHANGE_QUALITY = 'customer_change_quality';
+    
     public static function getBodyByModel(History $model)
     {
         switch ($model->event) {
-            case History::EVENT_CREATED_TASK:
-            case History::EVENT_COMPLETED_TASK:
-            case History::EVENT_UPDATED_TASK:
+            case HistoryListHelper::EVENT_CREATED_TASK:
+            case HistoryListHelper::EVENT_COMPLETED_TASK:
+            case HistoryListHelper::EVENT_UPDATED_TASK:
                 $task = $model->task;
                 return "$model->eventText: " . ($task->title ?? '');
-            case History::EVENT_INCOMING_SMS:
-            case History::EVENT_OUTGOING_SMS:
+            case HistoryListHelper::EVENT_INCOMING_SMS:
+            case HistoryListHelper::EVENT_OUTGOING_SMS:
                 return $model->sms->message ? $model->sms->message : '';
-            case History::EVENT_OUTGOING_FAX:
-            case History::EVENT_INCOMING_FAX:
+            case HistoryListHelper::EVENT_OUTGOING_FAX:
+            case HistoryListHelper::EVENT_INCOMING_FAX:
                 return $model->eventText;
-            case History::EVENT_CUSTOMER_CHANGE_TYPE:
+            case HistoryListHelper::EVENT_CUSTOMER_CHANGE_TYPE:
                 return "$model->eventText " .
                     (Customer::getTypeTextByType($model->getDetailOldValue('type')) ?? "not set") . ' to ' .
                     (Customer::getTypeTextByType($model->getDetailNewValue('type')) ?? "not set");
-            case History::EVENT_CUSTOMER_CHANGE_QUALITY:
+            case HistoryListHelper::EVENT_CUSTOMER_CHANGE_QUALITY:
                 return "$model->eventText " .
                     (Customer::getQualityTextByQuality($model->getDetailOldValue('quality')) ?? "not set") . ' to ' .
                     (Customer::getQualityTextByQuality($model->getDetailNewValue('quality')) ?? "not set");
-            case History::EVENT_INCOMING_CALL:
-            case History::EVENT_OUTGOING_CALL:
+            case HistoryListHelper::EVENT_INCOMING_CALL:
+            case HistoryListHelper::EVENT_OUTGOING_CALL:
                 /** @var Call $call */
                 $call = $model->call;
                 return ($call ? $call->totalStatusText . ($call->getTotalDisposition(false) ? " <span class='text-grey'>" . $call->getTotalDisposition(false) . "</span>" : "") : '<i>Deleted</i> ');
