@@ -2,9 +2,12 @@
 
 namespace app\models\search;
 
+use Yii;
 use app\models\History;
+use app\models\mapping\ObjectMap;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+
 
 /**
  * HistorySearch represents the model behind the search form about `app\models\History`.
@@ -41,8 +44,6 @@ class HistorySearch extends History
     {
         $query = History::find();
 
-        // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -63,15 +64,54 @@ class HistorySearch extends History
         }
 
         $query->addSelect('history.*');
-        $query->with([
-            'customer',
-            'user',
-            'sms',
-            'task',
-            'call',
-            'fax',
-        ]);
+
+        // Determine which relations to preload dynamically
+        $relationsToLoad = $this->determineRelationsToLoad();
+        if (!empty($relationsToLoad)) {
+            $query->with($relationsToLoad);
+        }
 
         return $dataProvider;
+    }
+
+    protected function determineRelationsToLoad()
+    {
+        $query = History::find()->select('object')->distinct();
+        $objects = $query->column();
+        $relations = $this->fetchRelationsFromMapping($objects);
+        
+        return $relations;
+    }
+
+    protected function fetchRelationsFromMapping($objects)
+    {
+        //Yii::$app->cache->flush();
+        //exit;
+        $cache = Yii::$app->cache;
+        $relations = [];
+
+        foreach ($objects as $object) {
+            $cacheKey = "relation_mapping_{$object}";
+            $relation = $cache->get($cacheKey);
+
+            if ($relation === false) {
+                $relationMapping = ObjectMap::findOne(['object_type' => $object]);
+
+                if($relationMapping == NULL){
+                    $relation == null;
+                }else {
+                        $relation = $relationMapping->object_type;
+                }
+                //$relation = $relationMapping ? $relationMapping->relation_name : null;
+                if ($relation) {
+                    $cache->set($cacheKey, $relation, 86400); // 24 hours cache
+                }
+            }
+
+            if ($relation && !in_array($relation, $relations)) {
+                $relations[] = $relation;
+            }
+        }
+        return $relations;
     }
 }
